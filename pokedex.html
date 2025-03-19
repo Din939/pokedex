@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokémon Info</title>
+    <link rel="stylesheet" href="styles.css">
+<style type="text/css" id="dcoder_stylesheet">body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.container {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    text-align: center;
+    width: 300px;
+}
+
+h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+input {
+    padding: 10px;
+    width: 80%;
+    font-size: 16px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+button {
+    padding: 10px;
+    font-size: 16px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+#pokemonInfo {
+    margin-top: 20px;
+    display: none;
+}
+
+img {
+    width: 150px;
+    height: 150px;
+    margin-bottom: 10px;
+}
+</style></head>
+<body>
+    <div class="container">
+        <h1>Pokémon Information</h1>
+        <input type="text" id="pokemonInput" placeholder="Enter Pokémon name or Pokedex number">
+        <button onclick="fetchPokemon()">Get Info</button>
+        
+        <div id="pokemonInfo">
+            <h2 id="pokemonName"></h2>
+            <img id="pokemonImage" src="" alt="Pokemon Image">
+            <p><strong>Height:</strong> <span id="pokemonHeight"></span></p>
+            <p><strong>Weight:</strong> <span id="pokemonWeight"></span></p>
+            <p><strong>Type:</strong> <span id="pokemonType"></span></p>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+
+<script type="text/javascript" id="dcoder_script">async function fetchPokemon() {
+    const input = document.getElementById('pokemonInput').value.toLowerCase();
+    const url = `https://pokeapi.co/api/v2/pokemon/${input}`;
+
+    try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error('Pokemon not found');
+
+        const data = await response.json();
+
+        // Get the required data from the response
+        const name = data.name.charAt(0).toUpperCase() + data.name.slice(1);
+        const height = data.height / 10;  // Convert to meters
+        const weight = data.weight / 10;  // Convert to kilograms
+        const types = data.types.map(type => type.type.name).join(', ');
+        const image = data.sprites.front_default;
+
+        // Display the information on the page
+        document.getElementById('pokemonName').textContent = name;
+        document.getElementById('pokemonHeight').textContent = `${height} m`;
+        document.getElementById('pokemonWeight').textContent = `${weight} kg`;
+        document.getElementById('pokemonType').textContent = types;
+        document.getElementById('pokemonImage').src = image;
+
+        // Make the info visible
+        document.getElementById('pokemonInfo').style.display = 'block';
+    } catch (error) {
+        alert('Error: Pokémon not found. Please try again!');
+    }
+}
+</script></body></html>
